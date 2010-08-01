@@ -82,12 +82,21 @@ describe Hashie::Mash do
     record.son = MyMash.new
     record.son.class.should == MyMash
   end
-  
+
+  it "should not convert the type of Hashie::Mashes childs to Hashie::Mash within a nesting" do
+    class MyMash < Hashie::Mash
+    end
+
+    record = MyMash.new
+    docs = Hashie::Mash.new({'record' => [record]})
+    docs.record.first.class.should == MyMash
+  end
+
   describe '#respond_to?' do
     it 'should respond to a normal method' do
       Hashie::Mash.new.should be_respond_to(:key?)
     end
-    
+
     it 'should respond to a set key' do
       Hashie::Mash.new(:abc => 'def').should be_respond_to(:abc)
     end
@@ -143,3 +152,4 @@ describe Hashie::Mash do
     end
   end
 end
+

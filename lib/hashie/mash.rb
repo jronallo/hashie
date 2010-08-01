@@ -117,7 +117,7 @@ module Hashie
      return true if key?(method_name)
      super
    end
-   
+
    def method_missing(method_name, *args, &blk)
      return self[method_name] if key?(method_name)
      match = method_name.to_s.match(/(.*?)([?=!]?)$/)
@@ -140,15 +140,15 @@ module Hashie
     end
 
     def convert_value(val, duping=false) #:nodoc:
-      case val
-        when ::Hash
-          val = val.dup if duping
-          self.class.new(val)
-        when Array
-          val.collect{ |e| convert_value(e) }
-        else
-          val
+      if val.class == ::Hash or val.class == Hashie::Mash
+        val = val.dup if duping
+        self.class.new(val)
+      elsif val.class == Array
+        val.collect{ |e| convert_value(e) }
+      else
+        val
       end
     end
   end
 end
+
